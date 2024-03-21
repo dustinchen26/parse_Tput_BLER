@@ -1,6 +1,6 @@
-# Parse du_stats_XXX.txt for each UE Time DL/UL Tput, BLER and MCS
+# parse_Tput_BLER
 
-online tool => https://dustinchen26.github.io/parse_du4
+online tool => https://dustinchen26.github.io/parse_Tput_BLER
 
 ## Example
 ```
