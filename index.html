@@ -144,7 +144,7 @@ Parse “du_stats_XXX.txt” multi-UE (Each_Tput_Time) => https://dustinchen26.g
                     id = values[0].padEnd(7);
                     dlTpt = values[5].padEnd(7);
                     ulTpt = values[7].padEnd(7);
-                    output += "<span class='ue-id'>id=" + id + "</span><span class='dl-tpt'>dlTpt=" + dlTpt +
+                    output += "<span class='ue-id'>●id=" + id + "</span><span class='dl-tpt'>dlTpt=" + dlTpt +
                         "</span><span class='ul-tpt'>ulTput=" + ulTpt + "</span>";
                 }
 
@@ -185,7 +185,7 @@ Parse “du_stats_XXX.txt” multi-UE (Each_Tput_Time) => https://dustinchen26.g
             var ulMcs = values[22].padEnd(7);
 
             // 返回結果字符串
-            output += "<span class='ue-id'>id=" + id + "</span><span class='dl-bler'>dlBler=" + dl_bler +
+            output += "<span class='ue-id'>●id=" + id + "</span><span class='dl-bler'>dlBler=" + dl_bler +
                 "</span><span class='ul-bler'>ulBler=" + ul_bler + "</span>";
 
             // 繼續解析下一行數字
@@ -216,7 +216,7 @@ Parse “du_stats_XXX.txt” multi-UE (Each_Tput_Time) => https://dustinchen26.g
                 }
 
                 ulMcs = values[22].padEnd(7);
-                output += "<span class='ue-id'>id=" + id + "</span><span class='dl-bler'>dlBler=" + dl_bler +
+                output += "<span class='ue-id'>●id=" + id + "</span><span class='dl-bler'>dlBler=" + dl_bler +
                     "</span><span class='ul-bler'>ulBler=" + ul_bler + "</span>";
                 index++;
             }
