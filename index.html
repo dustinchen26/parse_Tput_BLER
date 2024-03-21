@@ -62,6 +62,8 @@ Parse “du_stats_XXX.txt” multi-UE (Each_Tput_Time) => https://dustinchen26.g
             /* Adjust the font size as needed */
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+
     <script>
         function parseContent() {
             // 獲取輸入的文本區域內容
@@ -83,7 +85,7 @@ Parse “du_stats_XXX.txt” multi-UE (Each_Tput_Time) => https://dustinchen26.g
                 // 檢查是否包含 "GNB DU Statistics"
                 if (line.startsWith("GNB DU Statistics  ")) {
                     // Print the entire line and move to the next
-    output += line.substring("GNB DU Statistics  ".length) + " ";
+                    output += line.substring("GNB DU Statistics  ".length) + " ";
                     continue;
                 }
                 // 檢查是否包含 "UE-ID BEAM-ID"
@@ -107,6 +109,9 @@ Parse “du_stats_XXX.txt” multi-UE (Each_Tput_Time) => https://dustinchen26.g
 
             // 將結果添加到HTML中
             document.getElementById('output').innerHTML = output;
+
+            //生成Excel文件
+            generateExcel(output);
         }
 
         function parseUEData(lines, index) {
@@ -140,7 +145,7 @@ Parse “du_stats_XXX.txt” multi-UE (Each_Tput_Time) => https://dustinchen26.g
                     dlTpt = values[5].padEnd(7);
                     ulTpt = values[7].padEnd(7);
                     output += "<span class='ue-id'>id=" + id + "</span><span class='dl-tpt'>dlTpt=" + dlTpt +
-                        "</span> <span class='ul-tpt'>ulTput=" + ulTpt + "</span>";
+                        "</span><span class='ul-tpt'>ulTput=" + ulTpt + "</span>";
                 }
 
                 // 繼續處理下一行
@@ -180,7 +185,8 @@ Parse “du_stats_XXX.txt” multi-UE (Each_Tput_Time) => https://dustinchen26.g
             var ulMcs = values[22].padEnd(7);
 
             // 返回結果字符串
-            output += "<span class='ue-id'>id=" + id +"</span><span class='dl-bler'>dlBler=" + dl_bler + "</span><span class='ul-bler'>ulBler=" + ul_bler + "</span>" ;
+            output += "<span class='ue-id'>id=" + id + "</span><span class='dl-bler'>dlBler=" + dl_bler +
+                "</span><span class='ul-bler'>ulBler=" + ul_bler + "</span>";
 
             // 繼續解析下一行數字
             index++;
@@ -210,7 +216,8 @@ Parse “du_stats_XXX.txt” multi-UE (Each_Tput_Time) => https://dustinchen26.g
                 }
 
                 ulMcs = values[22].padEnd(7);
-                output += "<span class='ue-id'>id=" + id + "</span><span class='dl-bler'>dlBler=" + dl_bler + "</span><span class='ul-bler'>ulBler=" +  ul_bler+ "</span>" ;
+                output += "<span class='ue-id'>id=" + id + "</span><span class='dl-bler'>dlBler=" + dl_bler +
+                    "</span><span class='ul-bler'>ulBler=" + ul_bler + "</span>";
                 index++;
             }
 
@@ -220,6 +227,61 @@ Parse “du_stats_XXX.txt” multi-UE (Each_Tput_Time) => https://dustinchen26.g
         function printToPDF() {
             window.print();
         }
+
+function generateExcel(data) {
+    // 根据参数进行分隔和换行
+    var dataArray = data.split('\n'); // 根据换行符分割数据
+
+    // 获取最大列数
+    var maxColumns = 0;
+    for (var i = 0; i < dataArray.length; i++) {
+        var row = dataArray[i].trim().split(/\s+/);
+        if (row.length > maxColumns) {
+            maxColumns = row.length;
+        }
+    }
+
+    // 去除没有数据的列
+    var dataRows = [];
+    for (var i = 0; i < dataArray.length; i++) {
+        var row = dataArray[i].trim().split(/\s+/);
+        dataRows.push(row.slice(0, maxColumns));
+    }
+
+    // 将每行数据处理为字符串，去除 HTML 标签、类名、<span 和 >
+    for (var i = 0; i < dataRows.length; i++) {
+        dataRows[i] = dataRows[i].map(cell => {
+            var strippedCell = cell.replace(/<[^>]+>/g, ''); // 去除 HTML 标签
+            strippedCell = strippedCell.replace(/class='[^']+'/g, ''); // 去除类名
+            strippedCell = strippedCell.replace(/<span/g, ''); // 去除 <span
+            strippedCell = strippedCell.replace(/>/g, ''); // 去除 >
+            return strippedCell.trim(); // 去除首尾空白字符
+        });
+    }
+
+    /*Prepare workbook*/
+    var wb = XLSX.utils.book_new();
+    wb.Props = {
+        Title: "ParsingResult",
+        Subject: "ParsingResultfromdu_stats_XXX.txt",
+        Author: "Dustin_Chen",
+        CreatedDate: new Date()
+    };
+
+    /*Prepare worksheet*/
+    var ws = XLSX.utils.aoa_to_sheet(dataRows);
+    var wsName = "ParsingResult";
+    XLSX.utils.book_append_sheet(wb, ws, wsName);
+
+    /*Save workbook*/
+    var fileName = "parsing_result_" + new Date().toISOString().slice(0, 10) + ".xlsx";
+    XLSX.writeFile(wb, fileName);
+}
+
+
+
+
+
     </script>
 </head>
 
