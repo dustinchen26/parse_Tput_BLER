@@ -85,7 +85,7 @@ Parse “du_stats_XXX.txt” multi-UE (Each_Tput_Time) => https://dustinchen26.g
                 // 檢查是否包含 "GNB DU Statistics"
                 if (line.startsWith("GNB DU Statistics  ")) {
                     // Print the entire line and move to the next
-                    output += "\n"+ line.substring("GNB DU Statistics  ".length) + "\n";
+                    output += line.substring("GNB DU Statistics  ".length) ;
                     continue;
                 }
                 // 檢查是否包含 "UE-ID BEAM-ID"
@@ -144,8 +144,8 @@ Parse “du_stats_XXX.txt” multi-UE (Each_Tput_Time) => https://dustinchen26.g
                     id = values[0].padEnd(7);
                     dlTpt = values[5].padEnd(7);
                     ulTpt = values[7].padEnd(7);
-                    output += "<span class='ue-id'>|id=" + id + "</span><span class='dl-tpt'>dl_Tpt=" + dlTpt +
-                        "</span><span class='ul-tpt'>ulTput=" + ulTpt + "</span>";
+                    output += "<span class='ue-id'>|id:" + id + "</span><span class='dl-tpt'>dlTpt:" + dlTpt +
+                        "</span><span class='ul-tpt'>ulTput:" + ulTpt + "</span>";
                 }
 
                 // 繼續處理下一行
@@ -185,8 +185,8 @@ Parse “du_stats_XXX.txt” multi-UE (Each_Tput_Time) => https://dustinchen26.g
             var ulMcs = values[22].padEnd(7);
 
             // 返回結果字符串
-            output += "\n<span class='ue-id'>|id=" + id + "</span><span class='dl-bler'>dlBler=" + dl_bler +
-                "</span><span class='ul-bler'>ulBler=" + ul_bler + "</span>";
+            output += "<span class='ue-id'>|id:" + id + "</span><span class='dl-bler'>dlBler:" + dl_bler +
+                "</span><span class='ul-bler'>ulBler:" + ul_bler + "</span>";
 
             // 繼續解析下一行數字
             index++;
@@ -216,8 +216,8 @@ Parse “du_stats_XXX.txt” multi-UE (Each_Tput_Time) => https://dustinchen26.g
                 }
 
                 ulMcs = values[22].padEnd(7);
-                output += "<span class='ue-id'>|id=" + id + "</span><span class='dl-bler'>dlBler=" + dl_bler +
-                    "</span><span class='ul-bler'>ulBler=" + ul_bler + "</span>";
+                output += "<span class='ue-id'>|id:" + id + "</span><span class='dl-bler'>dlBler:" + dl_bler +
+                    "</span><span class='ul-bler'>ulBler:" + ul_bler + "</span>";
                 index++;
             }
 
@@ -255,6 +255,7 @@ function generateExcel(data) {
             strippedCell = strippedCell.replace(/class='[^']+'/g, ''); // 去除类名
             strippedCell = strippedCell.replace(/<span/g, ''); // 去除 <span
             strippedCell = strippedCell.replace(/>/g, ''); // 去除 >
+			strippedCell = strippedCell.replace(/\|/g, ''); // 去除 |
             return strippedCell.trim(); // 去除首尾空白字符
         });
     }
