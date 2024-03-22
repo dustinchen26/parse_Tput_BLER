@@ -241,23 +241,30 @@ function generateExcel(data) {
         }
     }
 
-    // 去除没有数据的列
+    // 去除没有数据的列和空白列
     var dataRows = [];
     for (var i = 0; i < dataArray.length; i++) {
         var row = dataArray[i].trim().split(/\s+/);
-        dataRows.push(row.slice(0, maxColumns));
-    }
 
-    // 将每行数据处理为字符串，去除 HTML 标签、类名、<span 和 >
-    for (var i = 0; i < dataRows.length; i++) {
-        dataRows[i] = dataRows[i].map(cell => {
-            var strippedCell = cell.replace(/<[^>]+>/g, ''); // 去除 HTML 标签
-            strippedCell = strippedCell.replace(/class='[^']+'/g, ''); // 去除类名
-            strippedCell = strippedCell.replace(/<span/g, ''); // 去除 <span
-            strippedCell = strippedCell.replace(/>/g, ''); // 去除 >
-			strippedCell = strippedCell.replace(/\|/g, ''); // 去除 |
-            return strippedCell.trim(); // 去除首尾空白字符
-        });
+        // 检查是否有数据
+        if (row.some(cell => cell.trim() !== '')) {
+            var newRow = [];
+            for (var j = 0; j < maxColumns; j++) {
+                if (row[j] !== undefined) {
+                    var strippedCell = row[j].replace(/<[^>]+>/g, ''); // 去除 HTML 标签
+                    strippedCell = strippedCell.replace(/class='[^']+'/g, ''); // 去除类名
+                    strippedCell = strippedCell.replace(/<span/g, ''); // 去除 <span
+                    strippedCell = strippedCell.replace(/>/g, ''); // 去除 >
+                    strippedCell = strippedCell.replace(/\|/g, ''); // 去除 |
+                    if (strippedCell.trim() !== '') {
+                        newRow.push(strippedCell.trim());
+                    }
+                }
+            }
+            if (newRow.length > 0) {
+                dataRows.push(newRow);
+            }
+        }
     }
 
     /*Prepare workbook*/
@@ -278,8 +285,6 @@ function generateExcel(data) {
     var fileName = "parsing_result_" + new Date().toISOString().slice(0, 10) + ".xlsx";
     XLSX.writeFile(wb, fileName);
 }
-
-
 
 
 
